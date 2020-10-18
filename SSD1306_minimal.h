@@ -1,29 +1,29 @@
 /*
   SSD1306_minimal.h - SSD1306 OLED Driver Library
-  
+
   Copyright (c) 2012, Adafruit Industries. All rights reserved.
   Copyright (c) 2012 GOF Electronics Co. Ltd ( http://www.geekonfire.com )
   Copyright (c) 2015 CoPiino Electronics All right reserved.
   Copyright (c) 2016 Kirk Northrop (github.com/kirknorthrop)
-  
+
   Original Author: Limor Fried/Ladyada Adafruit Industries
   Modified by: Jimbo.we (www.geekonfire.com)
   Modified by: CoPiino Electronics (http://copiino.cc)
 
-      CoPiino Electronics invests time and resources providing this open source code,
-      please support CoPiino Electronics and open-source hardware by purchasing
-      products from CoPiino Electronics!
+  CoPiino Electronics invests time and resources providing this open source code,
+  please support CoPiino Electronics and open-source hardware by purchasing
+  products from CoPiino Electronics!
 
-      What is it?
-        This library is derived from GOFi2cOLED library, only for SSD1306 in I2C Mode.
-        As the original library only supports Frame Buffered mode which requires to have
-        at least 1024bytes of free RAM for a 128x64px display it is too big for smaller devices.
+  What is it?
+  This library is derived from GOFi2cOLED library, only for SSD1306 in I2C Mode.
+  As the original library only supports Frame Buffered mode which requires to have
+  at least 1024bytes of free RAM for a 128x64px display it is too big for smaller devices.
 
-        So this a SSD1306 library that works great with ATTiny85 devices :)
+  So this a SSD1306 library that works great with ATTiny85 devices :)
 
   Modified by: Kirk Northrop (github.com/kirknorthrop)
 
-  It is a free software; you can redistribute it and/or modify it 
+  It is a free software; you can redistribute it and/or modify it
   under the terms of BSD license, check LICENSE for more information.
   All text above must be included in any redistribution.
 */
@@ -79,7 +79,7 @@
 #define COM_Output_Normal_Scan_Cmd            0xC0       //Normal mode (RESET). Scan from COM0 to COM[N �C1]
 #define COM_Output_Remap_Scan_Cmd             0xC8       //Remapped mode. Scan from COM[N-1] to COM0
 #define Set_Display_Offset_Cmd                0xD3       //Set vertical shift by COM from 0d~63d. The value is reset to 00h after RESET.
-#define Set_COM_Pins_Hardware_Config_Cmd      0xDA   
+#define Set_COM_Pins_Hardware_Config_Cmd      0xDA
 
 //Timing & Driving Scheme Setting Command (more than one bytes command pleaserefer to SSD1some more than one bytes command please 306 datasheet for details)
 #define Set_Display_Clock_Divide_Ratio_Cmd    0xD5
@@ -108,46 +108,45 @@
 
 
 
-// 
+//
 class SSD1306_Mini {
-  
-  public:
-    
-    // call this function once in "void setup()" to initiallize the display
-    void init(uint8_t address);
-  
-    // reset clipArea to maximum and clear the display
-    void clear();
-    
-    // move cursor to upper left corner in current clipArea
-    void startScreen();
-    
-    // set the clipArea, by default (0,0,128,8)
-    void clipArea(unsigned char col, unsigned char row, unsigned char w, unsigned char h);
-    
-    // move the cursor to a location (similar to clipArea)
-    void cursorTo( unsigned char row, unsigned char col );
-    
-    // print a single character
-    void printChar( char ch );
 
-    // print a string to the screen
-    void printString( const char * pText );
-    
-    // draw an image with defined x,y position and width,height definition
-    void drawImage( const unsigned char * img, unsigned char col, unsigned char row, unsigned char w, unsigned char h );
-      
-    //  
-    void displayX(int off);
-  
+public:
+
+  // call this function once in "void setup()" to initiallize the display
+  void init(uint8_t address);
+
+  // reset clipArea to maximum and clear the display
+  void clear();
+
+  // move cursor to upper left corner in current clipArea
+  void startScreen();
+
+  // set the clipArea, by default (0,0,128,8)
+  void clipArea(unsigned char col, unsigned char row, unsigned char w, unsigned char h);
+
+  // move the cursor to a location (similar to clipArea)
+  void cursorTo( unsigned char row, unsigned char col );
+
+  // print a single character
+  void printChar( char ch );
+
+  // print a string to the screen
+  void printString( const char * pText );
+
+  // draw an image with defined x,y position and width,height definition
+  void drawImage( const unsigned char * img, unsigned char col, unsigned char row, unsigned char w, unsigned char h );
+
+  //
+  void displayX(int off);
+
 //  private:
-    void sendCommand(unsigned char command);
-    void sendData(unsigned char Data);
-  
-    unsigned char getFlash( const unsigned char * mem, unsigned int idx  );
+  void sendCommand(unsigned char command);
+  void sendData(unsigned char Data);
+
+  unsigned char getFlash( const unsigned char * mem, unsigned int idx  );
 
 };
 
 
 #endif
-

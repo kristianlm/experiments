@@ -2,19 +2,19 @@
  * @file USI_TWI_Master.cpp
  */
 /*****************************************************************************
-*
-*
-* File              USI_TWI_Master.c compiled with gcc
-* Date              Friday, 10/31/08		Boo!
-* Updated by        jkl
-*
+ *
+ *
+ * File              USI_TWI_Master.c compiled with gcc
+ * Date              Friday, 10/31/08		Boo!
+ * Updated by        jkl
+ *
 
-* AppNote           : AVR310 - Using the USI module as a TWI Master
-*
-*		Extensively modified to provide complete I2C driver.
-*
-*Notes:
-*		- T4_TWI and T2_TWI delays are modified to work with 1MHz
+ * AppNote           : AVR310 - Using the USI module as a TWI Master
+ *
+ *		Extensively modified to provide complete I2C driver.
+ *
+ *Notes:
+ *		- T4_TWI and T2_TWI delays are modified to work with 1MHz
 default clock *			and now use hard code values. They would need to
 change *			for other clock rates. Refer to the Apps Note.
 *
@@ -62,24 +62,24 @@ union USI_TWI_state {
  */
 void USI_TWI_Master_Initialise(void) {
   PORT_USI |=
-      (1
-       << PIN_USI_SDA); // Enable pullup on SDA, to set high as released state.
+    (1
+     << PIN_USI_SDA); // Enable pullup on SDA, to set high as released state.
   PORT_USI |=
-      (1
-       << PIN_USI_SCL); // Enable pullup on SCL, to set high as released state.
+    (1
+     << PIN_USI_SCL); // Enable pullup on SCL, to set high as released state.
 
   DDR_USI |= (1 << PIN_USI_SCL); // Enable SCL as output.
   DDR_USI |= (1 << PIN_USI_SDA); // Enable SDA as output.
 
   USIDR = 0xFF; // Preload dataregister with "released level" data.
   USICR = (0 << USISIE) | (0 << USIOIE) | // Disable Interrupts.
-          (1 << USIWM1) | (0 << USIWM0) | // Set USI in Two-wire mode.
-          (1 << USICS1) | (0 << USICS0) |
-          (1 << USICLK) | // Software stobe as counter clock source
-          (0 << USITC);
+    (1 << USIWM1) | (0 << USIWM0) | // Set USI in Two-wire mode.
+    (1 << USICS1) | (0 << USICS0) |
+    (1 << USICLK) | // Software stobe as counter clock source
+    (0 << USITC);
   USISR = (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) |
-          (1 << USIDC) |    // Clear flags,
-          (0x0 << USICNT0); // and reset counter.
+    (1 << USIDC) |    // Clear flags,
+    (0x0 << USICNT0); // and reset counter.
 }
 
 /*!
@@ -158,13 +158,13 @@ unsigned char USI_TWI_Start_Read_Write(unsigned char *msg,
 unsigned char USI_TWI_Start_Transceiver_With_Data(unsigned char *msg,
                                                   unsigned char msgSize) {
   unsigned char const tempUSISR_8bit =
-      (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) |
-      (1 << USIDC) |    // Prepare register value to: Clear flags, and
-      (0x0 << USICNT0); // set USI to shift 8 bits i.e. count 16 clock edges.
+    (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) |
+    (1 << USIDC) |    // Prepare register value to: Clear flags, and
+    (0x0 << USICNT0); // set USI to shift 8 bits i.e. count 16 clock edges.
   unsigned char const tempUSISR_1bit =
-      (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) |
-      (1 << USIDC) |    // Prepare register value to: Clear flags, and
-      (0xE << USICNT0); // set USI to shift 1 bit i.e. count 2 clock edges.
+    (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) |
+    (1 << USIDC) |    // Prepare register value to: Clear flags, and
+    (0xE << USICNT0); // set USI to shift 1 bit i.e. count 2 clock edges.
   unsigned char *savedMsg;
   unsigned char savedMsgSize;
 
@@ -242,7 +242,7 @@ unsigned char USI_TWI_Start_Transceiver_With_Data(unsigned char *msg,
 
       if ((!USI_TWI_state.addressMode) &&
           USI_TWI_state
-              .memReadMode) // means memory start address has been written
+          .memReadMode) // means memory start address has been written
       {
         msg = savedMsg;                   // start at slave address again
         *(msg) |= (TRUE << TWI_READ_BIT); // set the Read Bit on Slave address
@@ -257,7 +257,7 @@ unsigned char USI_TWI_Start_Transceiver_With_Data(unsigned char *msg,
         }
       } else {
         USI_TWI_state.addressMode =
-            FALSE; // Only perform address transmission once.
+          FALSE; // Only perform address transmission once.
       }
     }
     /* Else masterRead cycle*/
@@ -295,10 +295,10 @@ unsigned char USI_TWI_Master_Transfer(unsigned char temp) {
   USISR = temp;                          // Set USISR according to temp.
                                          // Prepare clocking.
   temp = (0 << USISIE) | (0 << USIOIE) | // Interrupts disabled
-         (1 << USIWM1) | (0 << USIWM0) | // Set USI in Two-wire mode.
-         (1 << USICS1) | (0 << USICS0) |
-         (1 << USICLK) | // Software clock strobe as source.
-         (1 << USITC);   // Toggle Clock Port.
+    (1 << USIWM1) | (0 << USIWM0) | // Set USI in Two-wire mode.
+    (1 << USICS1) | (0 << USICS0) |
+    (1 << USICLK) | // Software clock strobe as source.
+    (1 << USITC);   // Toggle Clock Port.
   do {
     _delay_us(T2_TWI);
     USICR = temp; // Generate positve SCL edge.

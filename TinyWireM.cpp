@@ -52,7 +52,7 @@ void USI_TWI::begin() { // initialize I2C lib
 }
 
 void USI_TWI::beginTransmission(
-    uint8_t slaveAddr) { // setup address & write bit
+  uint8_t slaveAddr) { // setup address & write bit
   USI_BufIdx = 0;
   USI_Buf[USI_BufIdx] = (slaveAddr << TWI_ADR_BITS) | USI_SEND;
 }
@@ -71,7 +71,7 @@ uint8_t USI_TWI::endTransmission(uint8_t stop) { // actually sends the buffer
   bool xferOK = false;
   uint8_t errorCode = 0;
   xferOK = USI_TWI_Start_Read_Write(
-      USI_Buf, USI_BufIdx + 1); // core func that does the work
+    USI_Buf, USI_BufIdx + 1); // core func that does the work
   USI_BufIdx = 0;
   if (xferOK) {
     if (stop) {
@@ -84,7 +84,7 @@ uint8_t USI_TWI::endTransmission(uint8_t stop) { // actually sends the buffer
     return 0;
   } else { // there was an error
     errorCode =
-        USI_TWI_Get_State_Info(); // this function returns the error number
+      USI_TWI_Get_State_Info(); // this function returns the error number
     return errorCode;
   }
 }
@@ -98,7 +98,7 @@ USI_TWI::requestFrom(uint8_t slaveAddr,
   USI_BytesAvail = numBytes; // save this off in a global
   numBytes++;                // add extra byte to transmit header
   USI_Buf[0] =
-      (slaveAddr << TWI_ADR_BITS) | USI_RCVE; // setup address & Rcve bit
+    (slaveAddr << TWI_ADR_BITS) | USI_RCVE; // setup address & Rcve bit
   xferOK = USI_TWI_Start_Read_Write(USI_Buf,
                                     numBytes); // core func that does the work
   // USI_Buf now holds the data read
@@ -111,7 +111,7 @@ USI_TWI::requestFrom(uint8_t slaveAddr,
     return 0;
   } else { // there was an error
     errorCode =
-        USI_TWI_Get_State_Info(); // this function returns the error number
+      USI_TWI_Get_State_Info(); // this function returns the error number
     return errorCode;
   }
 }
