@@ -39,21 +39,18 @@
 // config
 #define SlaveAddress 0x3c
 
-
-
-
 // defines taken from GOFi2cOLED
-#define GOFi2cOLED_Command_Mode		      0x80
-#define GOFi2cOLED_Data_Mode		      0x40
+#define GOFi2cOLED_Command_Mode               0x80
+#define GOFi2cOLED_Data_Mode                  0x40
 
 //Fundamental Command (more than one bytes command pleaserefer to SSD1306 datasheet for details)
 #define Set_Contrast_Cmd                      0x81     //Double byte command to select 1 out of 256 contrast steps.Default(RESET = 0x7F)
 #define Entire_Display_On_Resume_Cmd          0xA4     //Resume to RAM content display(RESET), Output follows RAM content
 #define Entire_Display_On_Cmd                 0xA5     //Entire display ON, Output ignores RAM content
-#define GOFi2cOLED_Normal_Display_Cmd	        0xA6     //Normal display (RESET)
+#define GOFi2cOLED_Normal_Display_Cmd         0xA6     //Normal display (RESET)
 #define GOFi2cOLED_Inverse_Display_Cmd	      0xA7     //Inverse display
-#define GOFi2cOLED_Display_Off_Cmd	          0xAE     //sleep mode(RESET)
-#define GOFi2cOLED_Display_On_Cmd	            0xAF     //normal mode
+#define GOFi2cOLED_Display_Off_Cmd            0xAE     //sleep mode(RESET)
+#define GOFi2cOLED_Display_On_Cmd             0xAF     //normal mode
 
 //Scrolling Command (more than one bytes command pleaserefer to SSD1306 datasheet for details)
 #define Right_Horizontal_Scroll_Cmd           0x26
@@ -66,9 +63,9 @@
 
 //Addressing Setting Command (more than one bytes command pleaserefer to SSD1306 datasheet for details)
 #define Set_Memory_Addressing_Mode_Cmd        0x20
-#define HORIZONTAL_MODE			                  0x00
-#define VERTICAL_MODE			                    0x01
-#define PAGE_MODE			                        0x02       //Default(reset)
+#define HORIZONTAL_MODE                       0x00
+#define VERTICAL_MODE                         0x01
+#define PAGE_MODE                             0x02       //Default(reset)
 #define Set_Column_Address_Cmd                0x21       //Setup column start and end address. This command is only for horizontal or vertical addressing mode.
 #define Set_Page_Address_Cmd                  0x22       //Setup page start and end address. This command is only for horizontal or vertical addressing mode.
 

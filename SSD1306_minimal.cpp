@@ -324,7 +324,6 @@ void SSD1306_Mini::sendData(unsigned char Data)
 
 void SSD1306_Mini::init(uint8_t address)
 {
-
   TinyWireM.begin();
 
   _delay_ms(5);	//wait for OLED hardware init
@@ -381,7 +380,6 @@ void SSD1306_Mini::init(uint8_t address)
 }
 
 void SSD1306_Mini::clipArea(unsigned char col, unsigned char row, unsigned char w, unsigned char h){
-
   TinyWireM.begin();                    //initialize I2C
   TinyWireM.beginTransmission(SlaveAddress); // begin I2C transmission
   TinyWireM.send(GOFi2cOLED_Command_Mode);            // data mode
@@ -403,7 +401,6 @@ void SSD1306_Mini::clipArea(unsigned char col, unsigned char row, unsigned char 
   TinyWireM.send(row+h-1);
 
   TinyWireM.endTransmission();                    // stop I2C transmission
-
 }
 
 void SSD1306_Mini::cursorTo(unsigned char col, unsigned char row){
@@ -411,15 +408,12 @@ void SSD1306_Mini::cursorTo(unsigned char col, unsigned char row){
 }
 
 void SSD1306_Mini::startScreen(){
-
   sendCommand(0x00 | 0x0);  // low col = 0
   sendCommand(0x10 | 0x0);  // hi col = 0
   sendCommand(0x40 | 0x0); // line #0
-
 }
 
 void SSD1306_Mini::clear() {
-
   sendCommand(0x00 | 0x0);  // low col = 0
   sendCommand(0x10 | 0x0);  // hi col = 0
   sendCommand(0x40 | 0x0); // line #0
@@ -438,7 +432,6 @@ void SSD1306_Mini::clear() {
   }
 }
 
-
 void SSD1306_Mini::displayX(int off) {
   sendCommand(0x00 | 0x0);  // low col = 0
   sendCommand(0x10 | 0x0);  // hi col = 0
@@ -456,10 +449,7 @@ void SSD1306_Mini::displayX(int off) {
   }
 }
 
-
-
-void SSD1306_Mini::printChar( char ch ){
-
+void SSD1306_Mini::printChar( char ch ) {
   char data[5];
   unsigned char i= ch;
 
@@ -481,19 +471,16 @@ void SSD1306_Mini::printChar( char ch ){
   TinyWireM.send( 0x00 );
 
   TinyWireM.endTransmission();
-
 }
 
-void SSD1306_Mini::printString( const char * pText ){
+void SSD1306_Mini::printString( const char * pText ) {
   unsigned char i;
   unsigned char len = strlen( pText );
 
   for (i=0;i<len;i++){
     printChar( pText[i] );
   }
-
 }
-
 
 void SSD1306_Mini::drawImage( const unsigned char * img, unsigned char col, unsigned char row, unsigned char w, unsigned char h ){
   unsigned int i,k,data;
@@ -509,7 +496,5 @@ void SSD1306_Mini::drawImage( const unsigned char * img, unsigned char col, unsi
 
     TinyWireM.send((uint8_t) data );
     TinyWireM.endTransmission();
-
   }
-
 }
