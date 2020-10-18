@@ -295,6 +295,8 @@ const unsigned char  BasicFont[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, // NBSP  \xff
 };
 
+SSD1306_Mini::SSD1306_Mini(uint8_t address) {
+  SlaveAddress = address;
 }
 
 void SSD1306_Mini::sendCommand(unsigned char command)
@@ -317,7 +319,7 @@ void SSD1306_Mini::sendData(unsigned char Data)
   TinyWireM.endTransmission();                    // stop I2C transmission
 }
 
-void SSD1306_Mini::init(uint8_t address)
+void SSD1306_Mini::init()
 {
   TinyWireM.begin();
   _delay_ms(5);	//wait for OLED hardware init
