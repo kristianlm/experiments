@@ -458,6 +458,14 @@ void SSD1306_Mini::printChar(const char ch) {
   TinyWireM.endTransmission();
 }
 
+void SSD1306_Mini::printString_P(const char * pText) {
+  unsigned short i = 0;
+  unsigned char ch;
+  while( (ch = pgm_read_byte( &(pText[i++]) )) != 0) {
+    printChar(ch);
+  }
+}
+
 void SSD1306_Mini::printString(const char * pText) {
   const unsigned char len = strlen(pText);
 

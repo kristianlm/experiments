@@ -130,6 +130,7 @@ public:
 
   // print a string to the screen
   void printString( const char * pText );
+  void printString_P( const char * pText );
 
   // draw an image with defined x,y position and width,height definition
   void drawImage( const unsigned char * img, unsigned char col, unsigned char row, unsigned char w, unsigned char h );
