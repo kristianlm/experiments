@@ -1,3 +1,4 @@
+#include <util/delay.h>
 /*
   SSD1306_minimal.cpp - SSD1306 OLED Driver Library
   
@@ -326,7 +327,7 @@ void SSD1306_Mini::init(uint8_t address)
   
  TinyWireM.begin();
  
- delay(5);	//wait for OLED hardware init
+ _delay_ms(5);	//wait for OLED hardware init
 // constructor(128, 64);
  //SlaveAddress = address;
 
