@@ -36,9 +36,6 @@
 #include <TinyWireM.h>
 #include <USI_TWI_Master.h>
 
-// config
-#define SlaveAddress 0x3c
-
 // defines taken from GOFi2cOLED
 #define GOFi2cOLED_Command_Mode               0x80
 #define GOFi2cOLED_Data_Mode                  0x40
@@ -108,10 +105,13 @@
 //
 class SSD1306_Mini {
 
+  uint8_t SlaveAddress;
+
 public:
+  SSD1306_Mini(uint8_t adr);
 
   // call this function once in "void setup()" to initiallize the display
-  void init(uint8_t address);
+  void init();
 
   // reset clipArea to maximum and clear the display
   void clear();
@@ -140,8 +140,6 @@ public:
 //  private:
   void sendCommand(unsigned char command);
   void sendData(unsigned char Data);
-
-  unsigned char getFlash( const unsigned char * mem, unsigned int idx  );
 
 };
 

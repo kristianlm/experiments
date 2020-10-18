@@ -295,11 +295,6 @@ const unsigned char  BasicFont[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, // NBSP  \xff
 };
 
-
-unsigned char SSD1306_Mini::getFlash( const unsigned char * mem, unsigned int idx  ){
-  unsigned char data= pgm_read_byte( &(mem[idx]) );
-  return data;
-
 }
 
 void SSD1306_Mini::sendCommand(unsigned char command)
@@ -325,7 +320,6 @@ void SSD1306_Mini::sendData(unsigned char Data)
 void SSD1306_Mini::init(uint8_t address)
 {
   TinyWireM.begin();
-
   _delay_ms(5);	//wait for OLED hardware init
 // constructor(128, 64);
   //SlaveAddress = address;
@@ -449,36 +443,26 @@ void SSD1306_Mini::displayX(int off) {
   }
 }
 
-void SSD1306_Mini::printChar( char ch ) {
-  char data[5];
-  unsigned char i= ch;
-
-  data[0]= getFlash(BasicFont, i*5 );
-  data[1]= getFlash(BasicFont, i*5 + 1);
-  data[2]= getFlash(BasicFont, i*5 + 2);
-  data[3]= getFlash(BasicFont, i*5 + 3);
-  data[4]= getFlash(BasicFont, i*5 + 4);
-
+void SSD1306_Mini::printChar(const char ch) {
   TinyWireM.beginTransmission(SlaveAddress);
   TinyWireM.send(GOFi2cOLED_Data_Mode);            // data mode
 
   TinyWireM.send( 0x00 );
-  TinyWireM.send( data[0] );
-  TinyWireM.send( data[1] );
-  TinyWireM.send( data[2] );
-  TinyWireM.send( data[3] );
-  TinyWireM.send( data[4] );
+  TinyWireM.send(pgm_read_byte(&(BasicFont[((unsigned char)ch*5 )])));
+  TinyWireM.send(pgm_read_byte(&(BasicFont[((unsigned char)ch*5 + 1)])));
+  TinyWireM.send(pgm_read_byte(&(BasicFont[((unsigned char)ch*5 + 2)])));
+  TinyWireM.send(pgm_read_byte(&(BasicFont[((unsigned char)ch*5 + 3)])));
+  TinyWireM.send(pgm_read_byte(&(BasicFont[((unsigned char)ch*5 + 4)])));
   TinyWireM.send( 0x00 );
 
   TinyWireM.endTransmission();
 }
 
-void SSD1306_Mini::printString( const char * pText ) {
-  unsigned char i;
-  unsigned char len = strlen( pText );
+void SSD1306_Mini::printString(const char * pText) {
+  const unsigned char len = strlen(pText);
 
-  for (i=0;i<len;i++){
-    printChar( pText[i] );
+  for (unsigned char i = 0; i < len; i++) {
+    printChar(pText[i]);
   }
 }
 
@@ -489,7 +473,7 @@ void SSD1306_Mini::drawImage( const unsigned char * img, unsigned char col, unsi
 
   for (i=0;i< (w*h);i++){
 
-    data= getFlash( img, i);
+    data=pgm_read_byte(&(img[i]));
 
     TinyWireM.beginTransmission(SlaveAddress);
     TinyWireM.send(GOFi2cOLED_Data_Mode);            // data mode
