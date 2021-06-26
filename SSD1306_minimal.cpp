@@ -323,8 +323,6 @@ void SSD1306_Mini::init()
 {
   TinyWireM.begin();
   _delay_ms(5);	//wait for OLED hardware init
-// constructor(128, 64);
-  //SlaveAddress = address;
 
   sendCommand(GOFi2cOLED_Display_Off_Cmd);    /*display off*/
 
@@ -334,7 +332,6 @@ void SSD1306_Mini::init()
   sendCommand(Set_Display_Offset_Cmd);    /*set display offset*/
   sendCommand(0x00);
 
-
   sendCommand(Set_Memory_Addressing_Mode_Cmd); 	//set addressing mode
   sendCommand(HORIZONTAL_MODE); 			//set horizontal addressing mode
 
@@ -342,21 +339,19 @@ void SSD1306_Mini::init()
   sendCommand(0x00); 	//set column lower address
   sendCommand(0x10); 	//set column higher address
 
-
-
   sendCommand(0x40);    /*set display starconstructort line*/
 
   sendCommand(Set_Contrast_Cmd);    /*contract control*/
-  sendCommand(0xcf);    /*128*/
+  sendCommand(0x00);
 
-  sendCommand(Segment_Remap_Cmd);    /*set segment remap*/
+  sendCommand(Segment_Normal_map_Cmd);
 
-  sendCommand(COM_Output_Remap_Scan_Cmd);    /*Com scan direction*/
+  sendCommand(COM_Output_Normal_Scan_Cmd);
 
   sendCommand(GOFi2cOLED_Normal_Display_Cmd);    /*normal / reverse*/
 
   sendCommand(Set_Display_Clock_Divide_Ratio_Cmd);    /*set osc division*/
-  sendCommand(0x80);
+  sendCommand(0x20);
 
   sendCommand(Set_Precharge_Period_Cmd);    /*set pre-charge period*/
   sendCommand(0xf1);
