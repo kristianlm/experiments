@@ -1,0 +1,14 @@
+/gcc/AtmelStart.bin
+/gcc/AtmelStart.eep
+/gcc/AtmelStart.elf
+/gcc/AtmelStart.hex
+/gcc/AtmelStart.lss
+/gcc/AtmelStart.map
+/gcc/atmel_start.d
+/gcc/atmel_start.o
+/gcc/driver_isr.d
+/gcc/driver_isr.o
+/gcc/examples/
+/gcc/main.d
+/gcc/main.o
+/gcc/src/*
