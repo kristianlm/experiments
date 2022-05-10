@@ -34,37 +34,46 @@ examples/src
 OBJS +=  \
 src/adc_basic.o \
 examples/src/adc_basic_example.o \
+src/slpctrl.o \
 src/bod.o \
 src/cpuint.o \
 src/rtc.o \
+src/i2c_simple_master.o \
 src/clkctrl.o \
 src/opamp_basic.o \
 driver_isr.o \
+src/i2c_types.o \
 main.o \
 atmel_start.o \
-src/slpctrl.o \
+src/i2c_master.o \
+src/protected_io.o \
 src/driver_init.o \
-src/protected_io.o
+examples/src/i2c_master_example.o
 
 OBJS_AS_ARGS +=  \
 "src/adc_basic.o" \
 "examples/src/adc_basic_example.o" \
+"src/slpctrl.o" \
 "src/bod.o" \
 "src/cpuint.o" \
 "src/rtc.o" \
+"src/i2c_simple_master.o" \
 "src/clkctrl.o" \
 "src/opamp_basic.o" \
 "driver_isr.o" \
+"src/i2c_types.o" \
 "main.o" \
 "atmel_start.o" \
-"src/slpctrl.o" \
+"src/i2c_master.o" \
+"src/protected_io.o" \
 "src/driver_init.o" \
-"src/protected_io.o"
+"examples/src/i2c_master_example.o"
 
 # List the dependency files
 DEPS := $(OBJS:%.o=%.d)
 
 DEPS_AS_ARGS +=  \
+"src/i2c_simple_master.d" \
 "src/rtc.d" \
 "driver_isr.d" \
 "src/opamp_basic.d" \
@@ -74,8 +83,11 @@ DEPS_AS_ARGS +=  \
 "main.d" \
 "src/bod.d" \
 "src/slpctrl.d" \
-"src/protected_io.d" \
+"src/i2c_master.d" \
+"examples/src/i2c_master_example.d" \
 "src/driver_init.d" \
+"src/i2c_types.d" \
+"src/protected_io.d" \
 "examples/src/adc_basic_example.d" \
 "atmel_start.d"
 

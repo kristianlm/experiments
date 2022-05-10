@@ -53,6 +53,93 @@ void OPERATIONAL_AMPLIFIER_0_initialization(void)
 	OPERATIONAL_AMPLIFIER_0_init();
 }
 
+/* configure pins and initialize registers */
+void I2C_0_initialization(void)
+{
+
+	PA3_set_level(
+	    // <y> Initial level
+	    // <id> pad_initial_level
+	    // <false"> Low
+	    // <true"> High
+	    false);
+
+	PA3_set_dir(
+	    // <y> Pin direction
+	    // <id> pad_dir
+	    // <PORT_DIR_OFF"> Off
+	    // <PORT_DIR_IN"> In
+	    // <PORT_DIR_OUT"> Out
+	    PORT_DIR_OUT);
+
+	PA3_set_pull_mode(
+	    // <y> Pull configuration
+	    // <id> pad_pull_config
+	    // <PORT_PULL_OFF"> Off
+	    // <PORT_PULL_UP"> Pull-up
+	    PORT_PULL_OFF);
+
+	PA3_set_inverted(
+	    // <y> Invert I/O on pin
+	    // <id> pad_invert
+	    // <false"> Not inverted
+	    // <true"> Inverted
+	    false);
+
+	PA3_set_isc(
+	    // <y> Pin Input/Sense Configuration
+	    // <id> pad_isc
+	    // <PORT_ISC_INTDISABLE_gc"> Interrupt disabled but input buffer enabled
+	    // <PORT_ISC_BOTHEDGES_gc"> Sense Both Edges
+	    // <PORT_ISC_RISING_gc"> Sense Rising Edge
+	    // <PORT_ISC_FALLING_gc"> Sense Falling Edge
+	    // <PORT_ISC_INPUT_DISABLE_gc"> Digital Input Buffer disabled
+	    // <PORT_ISC_LEVEL_gc"> Sense low Level
+	    PORT_ISC_INTDISABLE_gc);
+
+	PA2_set_level(
+	    // <y> Initial level
+	    // <id> pad_initial_level
+	    // <false"> Low
+	    // <true"> High
+	    false);
+
+	PA2_set_dir(
+	    // <y> Pin direction
+	    // <id> pad_dir
+	    // <PORT_DIR_OFF"> Off
+	    // <PORT_DIR_IN"> In
+	    // <PORT_DIR_OUT"> Out
+	    PORT_DIR_OUT);
+
+	PA2_set_pull_mode(
+	    // <y> Pull configuration
+	    // <id> pad_pull_config
+	    // <PORT_PULL_OFF"> Off
+	    // <PORT_PULL_UP"> Pull-up
+	    PORT_PULL_OFF);
+
+	PA2_set_inverted(
+	    // <y> Invert I/O on pin
+	    // <id> pad_invert
+	    // <false"> Not inverted
+	    // <true"> Inverted
+	    false);
+
+	PA2_set_isc(
+	    // <y> Pin Input/Sense Configuration
+	    // <id> pad_isc
+	    // <PORT_ISC_INTDISABLE_gc"> Interrupt disabled but input buffer enabled
+	    // <PORT_ISC_BOTHEDGES_gc"> Sense Both Edges
+	    // <PORT_ISC_RISING_gc"> Sense Rising Edge
+	    // <PORT_ISC_FALLING_gc"> Sense Falling Edge
+	    // <PORT_ISC_INPUT_DISABLE_gc"> Digital Input Buffer disabled
+	    // <PORT_ISC_LEVEL_gc"> Sense low Level
+	    PORT_ISC_INTDISABLE_gc);
+
+	I2C_0_init();
+}
+
 /* Configure pins and initialize registers */
 void ADC_0_initialization(void)
 {
@@ -84,6 +171,8 @@ void system_init()
 	SLPCTRL_init();
 
 	CPUINT_init();
+
+	I2C_0_initialization();
 
 	ADC_0_initialization();
 
