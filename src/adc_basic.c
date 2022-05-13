@@ -80,7 +80,7 @@ int8_t ADC_0_init()
 	             | 0 << ADC_FREERUN_bp   /* ADC Freerun mode: disabled */
 	             | ADC_RESSEL_10BIT_gc   /* 10-bit mode */
 	             | 0 << ADC_RUNSTBY_bp   /* Run standby mode: disabled */
-	             | 1 << ADC_LEFTADJ_bp   /* Left Adjust Result: enabled */
+	             | 0 << ADC_LEFTADJ_bp   /* Left Adjust Result: enabled */
 	             | 0 << ADC_CONVMODE_bp; /* Differential Mode Conversion: disabled */
 
 	return 0;
@@ -199,11 +199,13 @@ diff_adc_result_t ADC_0_get_diff_conversion(adc_0_channel_t channel, adc_0_muxne
 	res = ADC_0_get_conversion_result();
 	ADC0.INTFLAGS |= ADC_RESRDY_bm;
 	return res;
-} /**
-   * \brief Return the number of bits in the ADC conversion result
-   *
-   * \return The number of bits in the ADC conversion result
-   */
+}
+
+/**
+ * \brief Return the number of bits in the ADC conversion result
+ *
+ * \return The number of bits in the ADC conversion result
+ */
 uint8_t ADC_0_get_resolution()
 {
 	return (ADC0.CTRLA & ADC_RESSEL0_bm) ? 10 : 12;

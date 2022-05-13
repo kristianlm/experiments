@@ -30,8 +30,9 @@
 #include <i2c_simple_master.h>
 #include <utils/atomic.h>
 
-#define slave_adr 0x4f
-#define slave_reg_adr 0x0
+#include <util/delay.h>
+
+#define slave_adr 60
 
 uint8_t read_data[2];
 
@@ -62,11 +63,11 @@ i2c_operations_t I2C_0_read_handler(void *d)
 This transfer sequence is typically done to first write to the slave the address in
 the slave to read from, thereafter to read N bytes from this address.
 */
-i2c_error_t I2C_0_do_transfer(uint8_t adr, uint8_t *data, uint8_t size)
+i2c_error_t I2C_0_do_transfer(uint8_t *data, uint8_t size)
 {
 	/* timeout is used to get out of twim_release, when there is no device connected to the bus*/
 	uint16_t              timeout = I2C_TIMEOUT;
-	transfer_descriptor_t d       = {data, size};
+	//transfer_descriptor_t d       = {data, size};
 
 	while (I2C_BUSY == I2C_0_open(slave_adr) && --timeout)
 		; // sit here until we get the bus..
@@ -75,11 +76,11 @@ i2c_error_t I2C_0_do_transfer(uint8_t adr, uint8_t *data, uint8_t size)
 
 	// This callback specifies what to do after the first write operation has completed
 	// The parameters to the callback are bundled together in the aggregate data type d.
-	I2C_0_set_data_complete_callback(I2C_0_read_handler, &d);
+	//I2C_0_set_data_complete_callback(I2C_0_read_handler, &d);
 	// If we get an address NACK, then try again by sending SLA+W
-	I2C_0_set_address_nack_callback(i2c_cb_restart_write, NULL);
+	//I2C_0_set_address_nack_callback(i2c_cb_restart_write, NULL);
 	// Transmit specified number of bytes
-	I2C_0_set_buffer((void *)&adr, 1);
+	I2C_0_set_buffer(data, size);
 	// Start a Write operation
 	I2C_0_master_operation(false);
 	timeout = I2C_TIMEOUT;
@@ -94,7 +95,8 @@ i2c_error_t I2C_0_do_transfer(uint8_t adr, uint8_t *data, uint8_t size)
 uint8_t I2C_0_test_i2c_master(void)
 {
 
-	I2C_0_do_transfer(slave_reg_adr, read_data, 2);
+  //I2C_0_do_transfer(slave_reg_adr, read_data, 2);
 	// If we get here, everything was OK
 	return 1;
 }
+

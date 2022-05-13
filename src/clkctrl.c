@@ -69,9 +69,9 @@ int8_t CLKCTRL_init()
 	//		 | 0 << CLKCTRL_SEL_bp /* Source Select: disabled */
 	//		 | 0 << CLKCTRL_ENABLE_bp /* External high-frequency Oscillator: disabled */);
 
-	// ccp_write_io((void*)&(CLKCTRL.OSCHFCTRLA),CLKCTRL_FREQSEL_4M_gc /* 4 */
-	//		 | 0 << CLKCTRL_AUTOTUNE_bp /* Auto-Tune enable: disabled */
-	//		 | 0 << CLKCTRL_RUNSTDBY_bp /* Run standby: disabled */);
+	ccp_write_io((void*)&(CLKCTRL.OSCHFCTRLA),CLKCTRL_FREQSEL_4M_gc /* 4 */
+			 | 0 << CLKCTRL_AUTOTUNE_bp /* Auto-Tune enable: disabled */
+			 | 0 << CLKCTRL_RUNSTDBY_bp /* Run standby: disabled */);
 
 	// ccp_write_io((void*)&(CLKCTRL.MCLKCTRLA),CLKCTRL_CLKSEL_OSCHF_gc /* Internal high-frequency oscillator */
 	//		 | 0 << CLKCTRL_CLKOUT_bp /* System clock out: disabled */);

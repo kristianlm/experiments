@@ -44,7 +44,7 @@
 int8_t SLPCTRL_init()
 {
 
-	SLPCTRL.CTRLA = 1 << SLPCTRL_SEN_bp      /* Sleep enable: enabled */
+	SLPCTRL.CTRLA = 0 << SLPCTRL_SEN_bp      /* Sleep enable:  */
 	                | SLPCTRL_SMODE_IDLE_gc; /* Idle mode */
 
 	return 0;

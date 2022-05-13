@@ -154,6 +154,11 @@ void ADC_0_initialization(void)
 	// Disable pull-up resistor
 	PD4_set_pull_mode(PORT_PULL_OFF);
 
+        /* // Disable digital input buffer */
+	/* PD5_set_isc(PORT_ISC_INPUT_DISABLE_gc); */
+	/* // Disable pull-up resistor */
+	/* PD5_set_pull_mode(PORT_PULL_OFF); */
+
 	ADC_0_init();
 }
 
@@ -164,7 +169,7 @@ void system_init()
 {
 	mcu_init();
 
-	OPERATIONAL_AMPLIFIER_0_initialization();
+	//OPERATIONAL_AMPLIFIER_0_initialization();
 
 	CLKCTRL_init();
 
@@ -172,11 +177,11 @@ void system_init()
 
 	CPUINT_init();
 
-	I2C_0_initialization();
+        I2C_0_initialization();
 
-	ADC_0_initialization();
+	//ADC_0_initialization();
 
-	RTC_0_init();
+	//RTC_0_init();
 
 	BOD_init();
 }

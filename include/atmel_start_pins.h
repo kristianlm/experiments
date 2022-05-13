@@ -196,6 +196,14 @@ static inline bool PA3_get_level()
 	return PORTA_get_pin_level(3);
 }
 
+static inline void PA6_set_pull_mode(const enum port_pull_mode pull_mode) {PORTA_set_pin_pull_mode(6, pull_mode);}
+static inline void PA6_set_dir(const enum port_dir dir) {PORTA_set_pin_dir(6, dir);}
+static inline void PA6_set_isc(const PORT_ISC_t isc) {PORTA_pin_set_isc(6, isc);}
+static inline void PA6_set_inverted(const bool inverted) {PORTA_pin_set_inverted(6, inverted);}
+static inline void PA6_set_level(const bool level) {PORTA_set_pin_level(6, level);}
+static inline void PA6_toggle_level() {PORTA_toggle_pin_level(6);}
+static inline bool PA6_get_level() {return PORTA_get_pin_level(6);}
+
 /**
  * \brief Set PD1 pull mode
  *

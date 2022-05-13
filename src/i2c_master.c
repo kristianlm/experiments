@@ -203,21 +203,27 @@ void I2C_0_set_timeout_callback(i2c_callback cb, void *p)
  */
 void I2C_0_init()
 {
+  TWI0.CTRLA = 0 << TWI_FMPEN_bp /* FM Plus Enable: disabled */
+    | TWI_SDAHOLD_500NS_gc /* SDA hold time off */
+    | TWI_SDASETUP_4CYC_gc; /* SDA setup time is 4 clock cycles */
 
-	// TWI0.CTRLA = 0 << TWI_FMPEN_bp /* FM Plus Enable: disabled */
-	//		 | TWI_SDAHOLD_OFF_gc /* SDA hold time off */
-	//		 | TWI_SDASETUP_4CYC_gc; /* SDA setup time is 4 clock cycles */
+  TWI0.DUALCTRL = 0x00; // disable dual mode (slave & master at the same time)
 
-	// TWI0.DBGCTRL = 0 << TWI_DBGRUN_bp; /* Debug Run: disabled */
+  // TWI0.DBGCTRL = 0 << TWI_DBGRUN_bp; /* Debug Run: disabled */
 
-	TWI0.MBAUD = (uint8_t)TWI0_BAUD(100000, 0); /* set MBAUD register */
-
-	TWI0.MCTRLA = 1 << TWI_ENABLE_bp     /* Enable TWI Master: enabled */
-	              | 0 << TWI_QCEN_bp     /* Quick Command Enable: disabled */
-	              | 0 << TWI_RIEN_bp     /* Read Interrupt Enable: disabled */
-	              | 0 << TWI_SMEN_bp     /* Smart Mode Enable: disabled */
-	              | TWI_TIMEOUT_200US_gc /* 200 Microseconds */
-	              | 0 << TWI_WIEN_bp;    /* Write Interrupt Enable: disabled */
+  /* // from https://github.com/microchip-pic-avr-examples/avr128db48-bare-metal-twi-mplab/blob/master/twi-host.X/peripherals/TWI/TWI_host.c */
+  /* // I don't know what all this does */
+  /* TWI0.MSTATUS = TWI_RIF_bm | TWI_WIF_bm | TWI_CLKHOLD_bm | TWI_RXACK_bm | */
+  /*   TWI_ARBLOST_bm | TWI_BUSERR_bm | TWI_BUSSTATE_IDLE_gc; */
+  
+  TWI0.MBAUD = (uint8_t)TWI0_BAUD(100000, 0); /* set MBAUD register */
+  
+  TWI0.MCTRLA = 1 << TWI_ENABLE_bp     /* Enable TWI Master: enabled */
+    | 0 << TWI_QCEN_bp     /* Quick Command Enable: disabled */
+    | 0 << TWI_RIEN_bp     /* Read Interrupt Enable: disabled */
+    | 0 << TWI_SMEN_bp     /* Smart Mode Enable: disabled */
+    // | TWI_TIMEOUT_200US_gc /* 200 Microseconds */
+    | 0 << TWI_WIEN_bp;    /* Write Interrupt Enable: disabled */
 }
 
 /**
@@ -312,7 +318,7 @@ void I2C_0_set_timeout(uint8_t to)
 {
 	TWI0.MCTRLA &= ~(TWI_RIEN_bm | TWI_WIEN_bm);
 	I2C_0_status.timeout_value = to;
-	TWI0.MCTRLA |= (TWI_RIEN_bm | TWI_WIEN_bm);
+	// TWI0.MCTRLA |= (TWI_RIEN_bm | TWI_WIEN_bm);
 }
 
 /**
@@ -395,13 +401,12 @@ i2c_error_t I2C_0_master_write(void)
 
 inline void I2C_0_poller(void)
 {
-	while (I2C_0_status.busy) {
-		_delay_ms(10);
-		while (!(TWI0.MSTATUS & TWI_RIF_bm) && !(TWI0.MSTATUS & TWI_WIF_bm)) {
-		};
-		_delay_ms(10);
-		I2C_0_master_isr();
-	}
+  while (I2C_0_status.busy) {
+    PA6_set_level(1);//_delay_us(10);
+    while (!(TWI0.MSTATUS & TWI_RIF_bm) && !(TWI0.MSTATUS & TWI_WIF_bm)) { };
+    PA6_set_level(0);//_delay_us(10);
+    I2C_0_master_isr();
+  }
 }
 
 static i2c_fsm_states_t I2C_0_do_I2C_RESET(void)
