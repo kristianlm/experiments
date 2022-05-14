@@ -141,47 +141,33 @@ void I2C_0_initialization(void)
 }
 
 /* Configure pins and initialize registers */
-void ADC_0_initialization(void)
-{
+void ADC_0_initialization(void) {
+  // Disable digital input buffer
+  PD1_set_isc(PORT_ISC_INPUT_DISABLE_gc);
+  // Disable pull-up resistor
+  PD1_set_pull_mode(PORT_PULL_OFF);
 
-	// Disable digital input buffer
-	PD1_set_isc(PORT_ISC_INPUT_DISABLE_gc);
-	// Disable pull-up resistor
-	PD1_set_pull_mode(PORT_PULL_OFF);
+  // Disable digital input buffer
+  PD4_set_isc(PORT_ISC_INPUT_DISABLE_gc);
+  // Disable pull-up resistor
+  PD4_set_pull_mode(PORT_PULL_OFF);
 
-	// Disable digital input buffer
-	PD4_set_isc(PORT_ISC_INPUT_DISABLE_gc);
-	// Disable pull-up resistor
-	PD4_set_pull_mode(PORT_PULL_OFF);
+  /* // Disable digital input buffer */
+  /* PD5_set_isc(PORT_ISC_INPUT_DISABLE_gc); */
+  /* // Disable pull-up resistor */
+  /* PD5_set_pull_mode(PORT_PULL_OFF); */
 
-        /* // Disable digital input buffer */
-	/* PD5_set_isc(PORT_ISC_INPUT_DISABLE_gc); */
-	/* // Disable pull-up resistor */
-	/* PD5_set_pull_mode(PORT_PULL_OFF); */
-
-	ADC_0_init();
+  ADC_0_init();
 }
 
-/**
- * \brief System initialization
- */
-void system_init()
-{
-	mcu_init();
-
-	//OPERATIONAL_AMPLIFIER_0_initialization();
-
-	CLKCTRL_init();
-
-	SLPCTRL_init();
-
-	CPUINT_init();
-
-        I2C_0_initialization();
-
-	//ADC_0_initialization();
-
-	//RTC_0_init();
-
-	BOD_init();
+void system_init() {
+  mcu_init();
+  OPERATIONAL_AMPLIFIER_0_initialization();
+  CLKCTRL_init();
+  SLPCTRL_init();
+  CPUINT_init();
+  I2C_0_initialization();
+  ADC_0_initialization();
+  RTC_0_init();
+  BOD_init();
 }

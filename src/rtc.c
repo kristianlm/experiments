@@ -46,11 +46,10 @@ int8_t RTC_0_init()
 	while (RTC.STATUS > 0) { /* Wait for all register to be synchronized */
 	}
 
-	// RTC.CMP = 0x0; /* Compare: 0x0 */
+	RTC.CMP = 0xFFFF;
+        RTC.CNT = 0x0000;
 
-	// RTC.CNT = 0x0; /* Counter: 0x0 */
-
-	RTC.CTRLA = RTC_PRESCALER_DIV1_gc   /* 1 */
+	RTC.CTRLA = RTC_PRESCALER_DIV1024_gc   /* 1 */
 	            | 1 << RTC_RTCEN_bp     /* Enable: enabled */
 	            | 1 << RTC_RUNSTDBY_bp; /* Run In Standby: enabled */
 

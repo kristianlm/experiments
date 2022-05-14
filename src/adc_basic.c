@@ -49,41 +49,38 @@ adc_irq_cb_t ADC_0_cb = NULL; /**
                                * \retval 0 the ADC init was successful
                                * \retval 1 the ADC init was not successful
                                */
-int8_t ADC_0_init()
-{
+int8_t ADC_0_init() {
+  ADC0.CTRLB = ADC_SAMPNUM_ACC4_gc; /* results accumulated */
+  ADC0.CTRLC = ADC_PRESC_DIV2_gc;
 
-	ADC0.CTRLB = ADC_SAMPNUM_ACC4_gc; /* 4 results accumulated */
+  // ADC0.CTRLD = 0x0 << ADC_SAMPDLY_gp /* Sampling Delay Selection: 0x0 */
+  //		 | ADC_INITDLY_DLY0_gc; /* Delay 0 CLK_ADC cycles */
 
-	// ADC0.CTRLC = ADC_PRESC_DIV2_gc; /* CLK_PER divided by 2 */
+  // ADC0.CTRLE = ADC_WINCM_NONE_gc; /* No Window Comparison */
 
-	// ADC0.CTRLD = 0x0 << ADC_SAMPDLY_gp /* Sampling Delay Selection: 0x0 */
-	//		 | ADC_INITDLY_DLY0_gc; /* Delay 0 CLK_ADC cycles */
+  // ADC0.DBGCTRL = 0 << ADC_DBGRUN_bp; /* Debug run: disabled */
 
-	// ADC0.CTRLE = ADC_WINCM_NONE_gc; /* No Window Comparison */
+  // ADC0.EVCTRL = 0 << ADC_STARTEI_bp; /* Start Event Input Enable: disabled */
 
-	// ADC0.DBGCTRL = 0 << ADC_DBGRUN_bp; /* Debug run: disabled */
+  ADC0.INTCTRL = 1 << ADC_RESRDY_bp  /* Result Ready Interrupt Enable: enabled */
+    | 0 << ADC_WCMP_bp; /* Window Comparator Interrupt Enable: disabled */
 
-	// ADC0.EVCTRL = 0 << ADC_STARTEI_bp; /* Start Event Input Enable: disabled */
+  ADC0.SAMPCTRL = 1 << ADC_SAMPLEN_gp; /* Sample length */
 
-	ADC0.INTCTRL = 1 << ADC_RESRDY_bp  /* Result Ready Interrupt Enable: enabled */
-	               | 0 << ADC_WCMP_bp; /* Window Comparator Interrupt Enable: disabled */
+  // ADC0.WINHT = 0x0; /* Window Comparator High Threshold: 0x0 */
 
-	// ADC0.MUXPOS = ADC_MUXPOS_AIN0_gc; /* ADC input pin 0 */
+  // ADC0.WINLT = 0x0; /* Window Comparator Low Threshold: 0x0 */
 
-	ADC0.SAMPCTRL = 0xa << ADC_SAMPLEN_gp; /* Sample length: 0xa */
+  VREF.ADC0REF = VREF_REFSEL_VDD_gc;
+    
+  ADC0.CTRLA = 1 << ADC_ENABLE_bp      /* ADC Enable */
+    | 1 << ADC_FREERUN_bp   /* ADC Freerun mode */
+    | ADC_RESSEL_10BIT_gc   /* 10-bit mode */
+    | 0 << ADC_RUNSTBY_bp   /* Run standby mode */
+    | 0 << ADC_LEFTADJ_bp   /* Left Adjust Result  */
+    | 0 << ADC_CONVMODE_bp; /* Differential Mode Conversion */
 
-	// ADC0.WINHT = 0x0; /* Window Comparator High Threshold: 0x0 */
-
-	// ADC0.WINLT = 0x0; /* Window Comparator Low Threshold: 0x0 */
-
-	ADC0.CTRLA = 1 << ADC_ENABLE_bp      /* ADC Enable: enabled */
-	             | 0 << ADC_FREERUN_bp   /* ADC Freerun mode: disabled */
-	             | ADC_RESSEL_10BIT_gc   /* 10-bit mode */
-	             | 0 << ADC_RUNSTBY_bp   /* Run standby mode: disabled */
-	             | 0 << ADC_LEFTADJ_bp   /* Left Adjust Result: enabled */
-	             | 0 << ADC_CONVMODE_bp; /* Differential Mode Conversion: disabled */
-
-	return 0;
+  return 0;
 }
 
 /**

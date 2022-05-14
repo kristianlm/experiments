@@ -204,7 +204,7 @@ void I2C_0_set_timeout_callback(i2c_callback cb, void *p)
 void I2C_0_init()
 {
   TWI0.CTRLA = 0 << TWI_FMPEN_bp /* FM Plus Enable: disabled */
-    | TWI_SDAHOLD_500NS_gc /* SDA hold time off */
+    | TWI_SDAHOLD_500NS_gc /* SDA hold time */
     | TWI_SDASETUP_4CYC_gc; /* SDA setup time is 4 clock cycles */
 
   TWI0.DUALCTRL = 0x00; // disable dual mode (slave & master at the same time)
@@ -402,9 +402,9 @@ i2c_error_t I2C_0_master_write(void)
 inline void I2C_0_poller(void)
 {
   while (I2C_0_status.busy) {
-    PA6_set_level(1);//_delay_us(10);
+    //PA6_set_level(1);//_delay_us(10);
     while (!(TWI0.MSTATUS & TWI_RIF_bm) && !(TWI0.MSTATUS & TWI_WIF_bm)) { };
-    PA6_set_level(0);//_delay_us(10);
+    //PA6_set_level(0);//_delay_us(10);
     I2C_0_master_isr();
   }
 }
