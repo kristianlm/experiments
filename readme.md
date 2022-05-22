@@ -81,6 +81,13 @@ this:
     -opost -olcuc -ocrnl onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0
     -isig -icanon -iexten -echo echoe echok -echonl -noflsh -xcase -tostop -echoprt echoctl echoke -flusho -extproc
     
+Which I think means you have to run
+
+    sudo stty -F /dev/ttyUSB0 eof ^Z -hupcl ignbrk -icrnl -ixon -opost -isig icanon -iexten -echo noflsh
+    
+In order to initialize the COM-port from Linux. There may be a
+shortcut for those, I don't know.
+    
 ## Sniffing the data
 
 I was hoping the protocol would be some dialect of SCPI, but it's
