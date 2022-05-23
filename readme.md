@@ -9,3 +9,5 @@ I followed
 
 I then connected an OLED up to show the audio signal. I got it working
 after a lot of effort (caused by my own silly bug).
+
+![me humming](breadboard.jpg)
