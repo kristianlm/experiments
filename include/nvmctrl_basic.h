@@ -32,6 +32,14 @@
 
 #define BOOTLOADER_SECTION __attribute__((section(".bootloader")))
 
+#if defined(__GNUC__)
+#define _FLASH_RELOCATE_BL_SECTION BOOTLOADER_SECTION
+#elif defined(__ICCAVR__)
+#define _FLASH_RELOCATE_BL_SECTION _Pragma("location = \"BOOTLOADER_SEGMENT\"")
+#else
+#error Unsupported compiler.
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -61,16 +69,22 @@ nvmctrl_status_t FLASH_0_write_eeprom_block(eeprom_adr_t eeprom_adr, uint8_t *da
 
 bool FLASH_0_is_eeprom_ready();
 
+_FLASH_RELOCATE_BL_SECTION
 uint8_t FLASH_0_read_flash_byte(flash_adr_t flash_adr);
 
+_FLASH_RELOCATE_BL_SECTION
 nvmctrl_status_t FLASH_0_write_flash_byte(flash_adr_t flash_adr, uint8_t *ram_buffer, uint8_t data);
 
+_FLASH_RELOCATE_BL_SECTION
 nvmctrl_status_t FLASH_0_erase_flash_page(flash_adr_t flash_adr);
 
+_FLASH_RELOCATE_BL_SECTION
 nvmctrl_status_t FLASH_0_write_flash_page(flash_adr_t flash_adr, uint8_t *data);
 
+_FLASH_RELOCATE_BL_SECTION
 nvmctrl_status_t FLASH_0_write_flash_block(flash_adr_t flash_adr, uint8_t *data, size_t size, uint8_t *ram_buffer);
 
+_FLASH_RELOCATE_BL_SECTION
 nvmctrl_status_t FLASH_0_write_flash_stream(flash_adr_t flash_adr, uint8_t data, bool finalize);
 
 #ifdef __cplusplus
