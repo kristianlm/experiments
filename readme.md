@@ -14,7 +14,7 @@ circuitry under test more.
 I set the probe scale on my scope to 0.01X and the units to
 `[A]`. This means I can read off the current directly in the display -
 very nice feature! I don't know how/if the scope division scale affect
-the readings or if it's just for display. My actual scope is set to
+the readings or if it's just for display. My actual probe is set to
 1X.
 
 ## Changing the core clock frequency
