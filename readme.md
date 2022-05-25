@@ -66,9 +66,135 @@ of `1.0mA` in 4Mhz and `4.1mA` in 24Mhz power consumtion under 3V.
 They also claim it takes the AVR128DB28 about `23µs` to go from 4Mhz
 at 24Mhz.
 
-> The datasheets also recommend connecting a 1µF capacitor across all
-> power sources. These were not connected here as they, naturally,
-> disrupted the measurements.
+The datasheets also recommend connecting a `1µF` capacitor across all
+power sources. I used a `10nF` instead because this affects the
+measurements.
+
+## Power consumption during sleep
+
+I've experimented with putting AVR devices in sleep mode several
+times: for the ATMega328 and ATTiny85. Then, I used the Watchdog Timer
+to trigger periodic interrupt to wake the CPU back up. It seems the
+AVR128 can't use the WDT like that - the WDT will always reset the
+device. Luckily, there's a PIT on the RTC that the datasheet says can
+be used for the same purpose.
+
+However, I struggled to get this working! I spent many hours trying to
+find out why my `RTC_PIT_vect` interrupt wouldn't trigger, and why it
+wouldn't return from power-down sleep mode. In the end I gave up and
+went to sleep. The next day it just worked. Maybe I needed a hardware
+power reset?
+
+Part of the problem were the BOOTSIZE fuse settings. I had changed
+these during my writing-to-flash experiments. I haven't been able to
+get interrupts working while `BOOTSIZE ≠ 0`. Something I'll have to
+get back to.
+
+After finally getting the `PIT` working, I realized it's pretty
+inaccurate:
+
+![OSC32](osc32.png)
+
+My scope's counter tells me it's running at `514.925Hz`. I assume
+that's fairly accurate. Unfortunately, it should be running at exactly
+`512Hz`. By the way, I'm using this code to produce that signal:
+
+```C
+#define ON() PA5_set_level(1);
+#define OFF() PA5_set_level(0);
+
+volatile uint8_t mark = 0;
+
+ISR(RTC_PIT_vect) {
+  mark = 1;
+  RTC.PITINTFLAGS = RTC_PI_bm;
+}
+
+void RTC_0_init() {
+
+  while (RTC.STATUS > 0) { }
+  RTC.CLKSEL = RTC_CLKSEL_XOSC32K_gc;
+
+  while (RTC.PITSTATUS > 0) { }
+
+  RTC.PITCTRLA = RTC_PERIOD_CYC64_gc
+    | 1 << RTC_PITEN_bp;
+
+  RTC.PITINTCTRL = 1 << RTC_PI_bp;
+}
+
+int main(void) {
+  atmel_start_init();
+  RTC_0_init();
+
+  PA5_set_dir(PORT_DIR_OUT);
+  PA5_set_pull_mode(PORT_PULL_OFF);
+
+  SLPCTRL_set_sleep_mode(SLPCTRL_SMODE_PDOWN_gc);
+
+  while (1) {
+    if(mark == 0) {
+      ON(); _delay_us(100); OFF(); _delay_us(100);
+      ON(); _delay_us(100); OFF(); _delay_us(400);
+    }
+    else {
+      ON(); _delay_us(100); OFF(); _delay_us(400);
+    }
+    sleep_cpu();
+  }
+}
+```
+
+There's only 1 pulse, so `mark` has been set by `RTC_PIT_vect` which
+is good. I tried to change `RTC.CALIB` to tune the internal
+oscillator, but it seems to have no effect. To double-check that my
+I'm doing this correctly, I also tried with an external `32.768kHz`
+crystal. Now `clkctrl.c` contains this bit to configure this:
+
+```C
+  ccp_write_io((void*)&(CLKCTRL.XOSC32KCTRLA),CLKCTRL_CSUT_1K_gc /* startup time */
+               | 1 << CLKCTRL_ENABLE_bp 
+               | 1 << CLKCTRL_RUNSTDBY_bp /* Run standby: disabled */
+               | 0 << CLKCTRL_SEL_bp /* crystal / clock */
+               | 1 << CLKCTRL_LPMODE_bp /* Low-Power Mode: disabled */);
+```
+
+And `RTC_0_init` changes `RTC.CLKSEL` from `RTC_CLKSEL_OSC32K_gc` to
+`RTC_CLKSEL_XOSC32K_gc`. With that in place, I get `512.055Hz` which
+is pretty good.
+
+![external crystal](xosc32.png)
+
+I guess that explains why all blog posts I read use an external
+crystal. The datasheets also do mention that "low-power before
+accuracy", so I guess this isn't all that surprising. It would still
+be nice to not have to use an external clock crystal. I could come
+back to this and re-try `RTC.CALIB`.
+
+Anyway, with all that out of the way, let's look at the current. Going
+into sleep mode, the device seems to go from around `1mA` to `40µA` -
+but that's in the low end of what my setup is able to measure. With my
+`100Ω` shunt resistor, `10µA` will yield a `1mV` readout on my probe -
+which is basically the resolution of my scope anyway. So I'm not going
+to be able to measure the datasheet claims of around `1.4µA` in this
+setting (`700nA` in power-down mode, plus another `700nA` for the
+RTC). My handheld ammeter tells me `2µA` so I guess they're right :-)
+
+Edit: I tried with a `1000Ω` shunt resist and I'm still not able to
+measure such low currents. The readings change as I change my scale
+and all sorts of surprises.
+
+There seems to be a slight increase in power consumption just before
+our code continues to run, approximately `30µs` startup time. The
+datasheet says that should be `100µs` from power-down and `24µs` from
+standby (section 39.5.1.1). I'm pretty sure I'm seeing 24 and not 100,
+so I wonder why that's quicker than expected. I'm doing
+`SLPCTRL_set_sleep_mode(SLPCTRL_SMODE_PDOWN_gc)` so that should be
+pretty unambiguous. Strange.
+
+Note that I'm cheating a little bit with my "average" probe
+setting. It gives me less noise so it's nice for presentation. I don't
+know exactly how this affects my readings.
 
 ## Power consumtion during flash write
 
@@ -174,3 +300,30 @@ wanted to learn more about.
 
 > I also tried [pyAVRdbg](https://github.com/stemnic/pyAVRdbg) but
 > couldn't get that to work.
+
+
+### Inspecting reset flags (causes)
+
+Donig this interactively with gdb is pretty neat!
+
+```gdb
+(gdb) p RSTFR           # original reset flags: UPDIRF, WDRF and PORF
+$1 = 41 ')'
+(gdb) p RSTFR & 1<<3    # WDRF
+$3 = 8
+(gdb) set RSTFR = 0     # clear all
+(gdb) p RSTFR & 1<<3    # check that it worked
+$4 = 0
+(gdb) c
+Continuing.
+
+Breakpoint 1, main () at ../main.c:29
+29	    sleep_cpu();
+(gdb) p RSTFR & 1<<3   # flag set
+$5 = 8
+(gdb) p RSTFR          # and only that flag set
+$6 = 8 '\b'
+```
+
+Also, a nice feature is that if you get a WDT timeout during
+debugging, you get `process aborted with signal` in you gdb session.

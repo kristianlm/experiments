@@ -1,49 +1,53 @@
 #include <atmel_start.h>
 #include <util/delay.h>
-
-static uint8_t rambuf[PROGMEM_PAGE_SIZE];
-
-// start.atmel.com workaround, should be called busy!!
-bool FLASH_0_is_busy() {
-  return FLASH_0_is_eeprom_ready();
-}
-
-static volatile nvmctrl_status_t status;
-static volatile uint8_t          rb; //           ,-- this L is _really_ important
-static volatile uint32_t         myadr = 70 * 1024L;
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
 
 #define ON() PA5_set_level(1);
 #define OFF() PA5_set_level(0);
 
-void hello() {
-  ON();
-  _delay_us(500);
-  OFF();
+volatile uint8_t mark = 0;
+volatile uint8_t dummy = 0;
+
+ISR(RTC_PIT_vect) {
+  mark = 1;
+  RTC.PITINTFLAGS = RTC_PI_bm;
+}
+
+void RTC_0_init() {
+
+  while (RTC.STATUS > 0) { }
+  RTC.CLKSEL = RTC_CLKSEL_XOSC32K_gc;
+  RTC.PER = 0x0100;
+  RTC.CALIB = 0xff;
+
+  while (RTC.PITSTATUS > 0) { }
+
+  RTC.PITCTRLA = RTC_PERIOD_CYC64_gc
+    | 1 << RTC_PITEN_bp;
+
+  RTC.PITINTCTRL = 1 << RTC_PI_bp;
 }
 
 int main(void) {
-
   atmel_start_init();
+  RTC_0_init();
 
   PA5_set_dir(PORT_DIR_OUT);
-  PA6_set_dir(PORT_DIR_OUT);
-
   PA5_set_pull_mode(PORT_PULL_OFF);
-  PA6_set_pull_mode(PORT_PULL_OFF);
-  
-  while (1) {
-    _delay_ms(1000);
-    status = 30; // why can't I breakpoint _delay_ms?
-    _delay_ms(1000);
 
-    hello();
-    status = FLASH_0_write_flash_byte(myadr + 0, rambuf, 1);
-    hello();
-    rb     = FLASH_0_read_flash_byte(myadr + 0);
-    hello();
-    
-    if (rb != 1) { // show panic
-      while(1) { ON(); _delay_ms(250); OFF(); _delay_ms(250); }
+  SLPCTRL_set_sleep_mode(SLPCTRL_SMODE_PDOWN_gc);
+
+  while (1) {
+    if(mark == 0) {
+      ON(); _delay_us(100); OFF(); _delay_us(100);
+      ON(); _delay_us(100); OFF(); _delay_us(400);
     }
+    else {
+      ON(); _delay_us(100); OFF(); _delay_us(400);
+    }
+    sleep_cpu();
+
+    dummy = 1;
   }
 }

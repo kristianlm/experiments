@@ -45,9 +45,9 @@
 int8_t BOD_init()
 {
 
-	ccp_write_io((void *)&(BOD.CTRLA), BOD_SLEEP_SAMPLED_gc /* Sampled */);
+	ccp_write_io((void *)&(BOD.CTRLA), BOD_SLEEP_DIS_gc);
 
-	BOD.INTCTRL = 1 << BOD_VLMIE_bp     /* voltage level monitor interrrupt enable: enabled */
+	BOD.INTCTRL = 0 << BOD_VLMIE_bp     /* voltage level monitor interrrupt enable: enabled */
 	              | BOD_VLMCFG_BOTH_gc; /* Interrupt when supply crosses VLM level */
 
 	// BOD.VLMCTRLA = BOD_VLMLVL_5ABOVE_gc; /* VLM threshold 5% above BOD level */
