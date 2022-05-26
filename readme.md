@@ -57,7 +57,7 @@ testing.
 
 VCC is 3V.
 
-![ss.png](ss.png)
+![power consumption at 24MHz](power-consumption-24MHz.png)
 
 These measurements tell us we're consuming `1.1mA` at 4Mhz and `4.2mA`
 in 24Mhz. That is nice because they seem to agree with the datasheets
