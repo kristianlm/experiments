@@ -147,9 +147,14 @@ int main(void) {
 
 There's only 1 pulse, so `mark` has been set by `RTC_PIT_vect` which
 is good. I tried to change `RTC.CALIB` to tune the internal
-oscillator, but it seems to have no effect. To double-check that my
+oscillator, but it seems to have no effect¹. To double-check that my
 I'm doing this correctly, I also tried with an external `32.768kHz`
 crystal. Now `clkctrl.c` contains this bit to configure this:
+
+> Edit¹: I forgot to set `RTC.CTRLA`'s CORREN bit. The frequency is
+> still rather unstable, however. Probably best to stick to external
+> crystals for these things. They cost nothing and don't require
+> anything else (except two pins).
 
 ```C
   ccp_write_io((void*)&(CLKCTRL.XOSC32KCTRLA),CLKCTRL_CSUT_1K_gc /* startup time */
