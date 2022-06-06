@@ -8,8 +8,7 @@ documentet instead of some [bundled proprietary
 software](https://www.peaktech.de/uk/PeakTech-P-6070-Digital-Laboratory-Power-Supply-with-USB/P-6070#downloads-tab-pane)
 for Windows only, so I started digging. I'm on Arch Linux.
 
-I have emailed the manufacturer regarding documentation, but I have
-yet not received a reply.
+I have emailed the manufacturer regarding documentation, and got a few documents in reply. I haven't looked carefully at them, but it seems my original assumption of CRC16 is correct. It looks like it is a CRC-16-IBM. I don't know if they want me to share them here.
 
 The good news is that device shows up a a USB serial port with drivers
 for Linux already in place on my `5.17` Arch Linux kernel. `dmesg` is
